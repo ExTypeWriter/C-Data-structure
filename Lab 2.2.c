@@ -18,7 +18,7 @@ void *CreateNode(ListNode **head,int Inputvalue)
         *head = newNode; // Assign new node as head.
     }
     else{
-        ListNode *lastNode = *head; // If head exists then let head be recent node.
+        ListNode *lastNode = *head; // If head exists then let head be last node.
 
         while(lastNode->next != NULL){ // If there is still next node ( Loop until last node).
             lastNode = lastNode->next; 
@@ -28,62 +28,35 @@ void *CreateNode(ListNode **head,int Inputvalue)
  
 }
 
-ListNode* reverse(ListNode* head)
-{
-    ListNode* prev = NULL;
-    ListNode* curr = head;
-    while (curr) {
-        ListNode* next = curr->next;
-        curr->next = prev;
-        prev = curr;
-        curr = next;
-    }
-    return prev;
-}
 
-ListNode *reverseSubList(ListNode* head, int first, int last)
+ListNode *reverseSubList(ListNode *head, int first, int last,int counter)
 {
-    if (first == last)
+    if (first == last) // If first equal to last node return the list back which mean no sublist to reverse.
         return head;
-  
-    // revs and revend is start and end respectively of the
-    // portion of the linked list which need to be reversed.
-    // revs_prev is previous of starting position and
-    // revend_next is next of end of list to be reversed.
-    ListNode *revs = NULL, *revs_prev = NULL;
-    ListNode *revend = NULL, *revend_next = NULL;
-  
-    // Find values of above pointers.
-    int i = 1;
-    ListNode *curr = head;
-    while (curr && i <= last) {
-        if (i < first) // Node that order less than first node to reverse will be put as previous node.
-            revs_prev = curr;
-        if (i == first) // If current index node equal to first index set current node as first node to reverse.
-            revs = curr;
-        if (i == last) { // If current index node equal to last index set current node as last node to be reverse.
-            revend = curr;
-            revend_next = curr->next;
-        }
-        curr = curr->next; // Push current node to next node
-        i++;
+    if (first<= 0 || last <= 0)
+        return head;
+    if (first > last)
+        return head;    
+    if (first > counter || last > counter)
+        return head;        
+    ListNode temp;
+    temp.next = head; // Link temp to head
+    ListNode *beforeSubList = &temp; // Set node before sublist at temp address.
+    int currentPos = 1;
+    while(currentPos < first){ // While first node of sublist not found
+        beforeSubList = beforeSubList->next; // Point to next node.
+        currentPos++;
     }
-    revend->next = NULL;
-    // Reverse linked list starting with reverse function.
-    revend = reverse(revs);
-    // If starting position was not head
-    if (revs_prev)
-        revs_prev->next = revend;
-    // If starting position was head
-    else
-        head = revend;
-    revs->next = revend_next;
-    printf("Finished\n");
-    return head;
+    ListNode *currentNode = beforeSubList->next;
+    while(first < last){
+        ListNode *extractNode = currentNode->next;
+        currentNode->next = extractNode->next;
+        extractNode->next = beforeSubList->next;
+        beforeSubList->next = extractNode; 
+        first++;
+    }
+    return (head);
 }
-
-
-
 
     
 void printfList(ListNode *head)
@@ -104,16 +77,21 @@ int main(){
     int first,last;
     ListNode *head , *temp;
     while(endOfList != 1){
-        fgets(value, sizeof(value) ,stdin);
-        if(strcmp(value,"END\n") == 0){
+        scanf("%s",value);
+        if(strcmp(value,"END") == 0){
             endOfList = 1;
             break;
         }
         CreateNode(&head,atoi(value));
         nodeCounter++;
     }
-    scanf("%d %d",&first,&last);
-    printf("%d %d\n",first,last);
-    reverseSubList(head,first,last);
-    printfList(head);
+    if(nodeCounter!= 0){
+        scanf("%d %d",&first,&last);
+        reverseSubList(head,first,last,nodeCounter);
+        printfList(head);
+    }
+    else
+    {
+        return(0);
+    }
 }
