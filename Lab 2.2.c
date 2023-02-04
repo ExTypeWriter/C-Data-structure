@@ -38,6 +38,7 @@ ListNode *reverseSubList(ListNode *head, int first, int last,int counter)
     if (first > last)
         return head;    
     if (first > counter || last > counter)
+        printf("None\n");
         return head;        
     ListNode temp;
     temp.next = head; // Link temp to head
