@@ -50,7 +50,7 @@ void show(int max_display)
 {
     t_node *temp = top;
     int lastCount = 0;
-    while(max_display!= 0){
+    while(max_display!= 0){ // Loop until set number of node.
         if(temp->next == NULL){ // If it is the last node or empty node.
             if(lastCount != 0){ // If it is the last node. ( still have data to display )
                 printf("None ");
@@ -61,8 +61,8 @@ void show(int max_display)
             lastCount++;
         }
         else{
-            printf("%s ",temp->data);
-            temp = temp->next;
+            printf("%s ",temp->data); // Display node.
+            temp = temp->next; // Tranverse to next node.
         }
         max_display--;
     }
