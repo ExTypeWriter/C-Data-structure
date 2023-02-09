@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-int cmpfunc(const void *a, const void *b) { return (*(int *)a - *(int *)b); } // Compare two elements for qsort function.
+int cmpfunc(const void *a, const void *b); // Compare two elements for qsort function.
 int matrixDisplay(int** matrix,int row , int col);
 int OddEvenDisplaySort(int * array,int arraySize);
 
@@ -9,7 +9,6 @@ int main()
     int row,col;
     int **Input2DArray;
     int *Odd,*Even;
-    int Count = 0;
     int OddCount = 0;
     int EvenCount = 0;
 
@@ -95,4 +94,8 @@ int OddEvenDisplaySort(int * array,int arraySize){
     else{
         printf("None\n");
     }
+}
+
+int cmpfunc(const void *a, const void *b){ 
+    return (*(int *)a - *(int *)b); 
 }

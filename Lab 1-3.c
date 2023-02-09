@@ -2,19 +2,19 @@
 #include <stdlib.h>
 
 int main() {
-  // initial stuff
+  // initializing the variables.
   int size;
   scanf("%d", &size);
   int *arrayTemp = (int *)calloc(size, sizeof(int));
   int *array = (int *)calloc(size, sizeof(int));
   int *arrayindex = (int *)calloc(size, sizeof(int));
-  // scanf for input array
+  // scanf for input array.
   for (int i = 0; i < size; i++) {
     scanf("%d", &arrayTemp[i]);
     array[i] = arrayTemp[i];
     arrayindex[i] = i;
   }
-  // bubble sorting
+  // bubble sorting the array.
   for (int i = 0; i < size; i++) {
     for (int j = 0; j < size; j++) {
       int breaker = 0;
