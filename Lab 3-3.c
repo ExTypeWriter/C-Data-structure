@@ -11,6 +11,32 @@ struct t_node
 
 t_node *top = NULL;
 
+void push(char *val);
+char *pop();
+void show(int max_display);
+
+int main()
+{   
+    int buf_size = 100000;
+    int num_shown;
+    char buffer[buf_size];
+    char retVal[64];
+    char *token;
+    
+    fgets(buffer,buf_size,stdin);
+    if(buffer[strlen(buffer)-1] == '\n'){
+                buffer[strlen(buffer)-1] = '\0';                                                      
+    }
+    token = strtok(buffer," ");
+    while(token != NULL){
+                push(token);
+                token = strtok(NULL," ");            
+    }
+    scanf("%d",&num_shown);
+    show(num_shown);
+    printf("\n");
+}
+
 void push(char *val)
 {
     t_node *new_node;
@@ -41,7 +67,7 @@ char *pop()
     }
     t_node *temp = top;
     char *temp_data;
-    strcpy(temp_data, top->data);
+    memcpy(temp_data, top->data,strlen(top->data));
     top = top->next;
     free(temp);
     return (temp_data);
@@ -66,26 +92,4 @@ void show(int max_display)
         }
         max_display--;
     }
-}
-
-int main()
-{   
-    int buf_size = 100000;
-    int num_shown;
-    char buffer[buf_size];
-    char retVal[64];
-    char *token;
-    
-    fgets(buffer,buf_size,stdin);
-    if(buffer[strlen(buffer)-1] == '\n'){
-                buffer[strlen(buffer)-1] = '\0';                                                      
-    }
-    token = strtok(buffer," ");
-    while(token != NULL){
-                push(token);
-                token = strtok(NULL," ");            
-    }
-    scanf("%d",&num_shown);
-    show(num_shown);
-    printf("\n");
 }
