@@ -8,6 +8,34 @@ struct ListNode {
 };
 typedef struct ListNode ListNode;
 
+void *CreateNode(ListNode **head,int Inputvalue);
+ListNode *reverseSubList(ListNode *head, int first, int last,int counter);    
+void printfList(ListNode *head);
+
+int main(){ 
+    char value[10000];
+    int endOfList = 0;
+    int nodeCounter = 0;
+    int first,last;
+    ListNode *head , *temp;
+    while(endOfList != 1){
+        scanf("%s",value);
+        if(strcmp(value,"END") == 0){
+            endOfList = 1;
+            break;
+        }
+        CreateNode(&head,atoi(value));
+        nodeCounter++;
+    }
+    if(nodeCounter!= 0){
+        scanf("%d %d",&first,&last);
+        reverseSubList(head,first,last,nodeCounter);
+        printfList(head);
+    }
+    
+        return(0);
+}
+
 void *CreateNode(ListNode **head,int Inputvalue)
 {
     // Allocate memory for new nodes.
@@ -25,9 +53,7 @@ void *CreateNode(ListNode **head,int Inputvalue)
         }
         lastNode->next = newNode; // Link the last node to the newNode.
     }
- 
 }
-
 
 ListNode *reverseSubList(ListNode *head, int first, int last,int counter)
 {
@@ -58,7 +84,6 @@ ListNode *reverseSubList(ListNode *head, int first, int last,int counter)
     return (head);
 }
 
-    
 void printfList(ListNode *head)
 {
 
@@ -68,30 +93,4 @@ void printfList(ListNode *head)
         head = head->next;
     }
     printf("\n");
-}
-
-int main(){ 
-    char value[10000];
-    int endOfList = 0;
-    int nodeCounter = 0;
-    int first,last;
-    ListNode *head , *temp;
-    while(endOfList != 1){
-        scanf("%s",value);
-        if(strcmp(value,"END") == 0){
-            endOfList = 1;
-            break;
-        }
-        CreateNode(&head,atoi(value));
-        nodeCounter++;
-    }
-    if(nodeCounter!= 0){
-        scanf("%d %d",&first,&last);
-        reverseSubList(head,first,last,nodeCounter);
-        printfList(head);
-    }
-    else
-    {
-        return(0);
-    }
 }
