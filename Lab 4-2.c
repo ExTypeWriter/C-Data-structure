@@ -95,10 +95,10 @@ void enqueue(queue *q, char *value)
         printf("List is full\n");
     }
 }
-void reverse(queue *q , t_node** head_ref)
+static void reverse(t_node** head_ref)
 {
     t_node* prev = NULL;
-    t_node* current = q->front;
+    t_node* current = *head_ref;
     t_node* next = NULL;
     while (current != NULL) {
         // Store next
@@ -111,7 +111,7 @@ void reverse(queue *q , t_node** head_ref)
         prev = current;
         current = next;
     }
-    q->front = prev;
+    *head_ref = prev;
 }
 char *dequeue(queue *q)
 {
@@ -165,18 +165,19 @@ void display(queue *q,int delNum)
     {
         // printf("It's not higher\n");
         // Dequeue the node for delNum times.
+        // reverse(&(q->front));
         while(i < delNum)
         {
-            reverse(q,&(q->front));
             // printf("Dequeing\n");
-            dequeue(q);
+            q->front->data[strcspn(q->front->data,"\n")] = 0;
+            printf("%s ",dequeue(q));
             i++;
         }
-        reverse(q,&(q->front));
-        while(q->front != NULL)
-        {
-            printf("%s ",q->front->data);
-            q->front = q->front->next;
-        }
+        // reverse(&(q->front));
+        // while(q->front != NULL)
+        // {
+        //     printf("%s ",q->front->data);
+        //     q->front = q->front->next;
+        // }
     }
 }
