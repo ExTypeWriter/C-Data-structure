@@ -109,12 +109,12 @@ void removeDuplicates(struct t_node *head)
         if (current->data == current->next->data) // If next node data is equal to current node data.
         {
             next_next = current->next->next; // Set next_next node as next node's next of the current node
+            free(current->next);
+            current->next = next_next;
             // Ex. 1 -> 2 -> 3 -> 3 -> 4 now first 3 is current node then next node is 3 and it's a duplicate
             // to our current node collect the next node's next (4) in next_next and free the next node (second 3)
             // Then set the next_next as next node of current node.
             // And now we ge : 1-> 2 -> 3 -> 4.
-            free(current->next);
-            current->next = next_next;
         }
         else 
         {
