@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TRUE 1
-#define FALSE 0
-#define FULL 10
+#define FULL 1000
 
 struct t_node
 {
@@ -92,27 +90,10 @@ void enqueue(queue *q, char *value)
     }
     else
     {
-        printf("List is full\n");
+        printf("LIST IS FULL\n");
     }
 }
-static void reverse(t_node** head_ref)
-{
-    t_node* prev = NULL;
-    t_node* current = *head_ref;
-    t_node* next = NULL;
-    while (current != NULL) {
-        // Store next
-        next = current->next;
- 
-        // Reverse current node's pointer
-        current->next = prev;
- 
-        // Move pointers one position ahead.
-        prev = current;
-        current = next;
-    }
-    *head_ref = prev;
-}
+
 char *dequeue(queue *q)
 {
     t_node *tmp; 
@@ -163,21 +144,11 @@ void display(queue *q,int delNum)
     }
     else if(delNum < q->count || delNum == q->count)
     {
-        // printf("It's not higher\n");
-        // Dequeue the node for delNum times.
-        // reverse(&(q->front));
         while(i < delNum)
         {
-            // printf("Dequeing\n");
             q->front->data[strcspn(q->front->data,"\n")] = 0;
             printf("%s ",dequeue(q));
             i++;
         }
-        // reverse(&(q->front));
-        // while(q->front != NULL)
-        // {
-        //     printf("%s ",q->front->data);
-        //     q->front = q->front->next;
-        // }
     }
 }
