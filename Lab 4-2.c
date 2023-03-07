@@ -19,6 +19,8 @@ struct queue
 };
 typedef struct queue queue;
 
+queue *fillQueue(queue *q);
+
 void createQueue(queue *q);
 
 int isempty(queue *q);
@@ -31,30 +33,35 @@ void display(queue *q,int delNum);
 
 int main()
 {
-        queue *q;
-        int input_size = 1000;
-		int deNum;
-		char userInput[input_size];
-		char *token;
-        q = malloc(sizeof(queue));
-		createQueue(q);
-		fgets(userInput,input_size,stdin);
-		//Replace the \n with Null characters to split the word.
-		if(userInput[strlen(userInput-1)] == '\n')
-		{
-			userInput[strlen(userInput)-1] = '\0'; 
-		}	
-		token = strtok(userInput," ");
-		while(token != NULL)
-		{
-			enqueue(q,token);
-            // printf("Got it\n");
-			token = strtok(NULL," ");
-		}
+    int deNum;
+    queue *q;
+    q = malloc(sizeof(queue));
+    createQueue(q);
+    fillQueue(q);
     scanf("%d",&deNum);
     display(q,deNum);
     printf("\n");
     return 0;
+}
+
+queue *fillQueue(queue *q)
+{
+    int input_size = 1000;
+    char userInput[input_size];
+    char *token;
+    fgets(userInput,input_size,stdin);
+    //Replace the \n with Null characters to split the word.
+    if(userInput[strlen(userInput-1)] == '\n') // If last characters is \n.
+    {
+        userInput[strlen(userInput)-1] = '\0'; // Replace it with NULL characters.
+    }	
+    token = strtok(userInput," ");
+    while(token != NULL)
+    {
+        enqueue(q,token);
+        token = strtok(NULL," ");
+    }
+    return (q);
 }
 
 void createQueue(queue *q)
@@ -107,48 +114,28 @@ char *dequeue(queue *q)
 
 void display(queue *q,int delNum)
 {
+    int lastNode = 0;
     if(q->front == NULL)
     {
         printf("None\n");
         exit(0);
     }
-    int i = 0;
-    // Begin printing
-    if(delNum > q->count) // Delete number is more than number of node in queue.
+    while(delNum != 0)
     {
-        // printf("It's higer!\n");
-        int last_node = 0;
-        while (delNum!= 0)
+        if(q->front->next == NULL && lastNode == 0)
         {
-            if(q->front->next == NULL)
-            {
-                if(last_node != 0)
-                {
-                    printf("None ");
-                }  
-                else
-                {
-                    q->front->data[strcspn(q->front->data,"\n")] = 0; // Remove newline character from last node.
-                    printf("%s ",q->front->data);
-                }
-                last_node++;
-            }
-            else
-            {
-
-                printf("%s ",q->front->data);
-                q->front = q->front->next;
-            }
-            delNum--;
+            q->front->data[strcspn(q->front->data,"\n")] = 0; // Remove newline character from last node.
+            printf("%s ",q->front->data);
+            lastNode += 1;
         }
-    }
-    else if(delNum < q->count || delNum == q->count)
-    {
-        while(i < delNum)
+        else if(lastNode >= 1)
         {
-            q->front->data[strcspn(q->front->data,"\n")] = 0;
+            printf("None ");
+        }
+        else
+        {
             printf("%s ",dequeue(q));
-            i++;
         }
+        delNum--;
     }
 }
