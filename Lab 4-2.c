@@ -4,18 +4,18 @@
 
 #define FULL 1000
 
-struct t_stack
+struct t_node
 {
     char *data;
-    struct t_stack *next;
+    struct t_node *next;
 };
-typedef struct t_stack t_stack;
+typedef struct t_node t_node;
 
 struct queue
 {
     int count;
-    t_stack *front;
-    t_stack *rear;
+    t_node *front;
+    t_node *rear;
 };
 typedef struct queue queue;
 
@@ -73,8 +73,8 @@ void enqueue(queue *q, char *value)
 {
     if (q->count < FULL)
     {
-        t_stack *tmp;
-        tmp = malloc(sizeof(t_stack));
+        t_node *tmp;
+        tmp = malloc(sizeof(t_node));
         tmp->data = value;
         tmp->next = NULL;	
         if(!isempty(q))
@@ -88,11 +88,15 @@ void enqueue(queue *q, char *value)
         }
         q->count++;
     }
+    else
+    {
+        printf("LIST IS FULL\n");
+    }
 }
 
 char *dequeue(queue *q)
 {
-    t_stack *tmp; 
+    t_node *tmp; 
     tmp = q->front;
     char *n = q->front->data;
     q->front = q->front->next;
@@ -108,7 +112,7 @@ void display(queue *q,int delNum)
         printf("None\n");
         exit(0);
     }
-    int i,node_count = 0;
+    int i = 0;
     // Begin printing
     if(delNum > q->count) // Delete number is more than number of node in queue.
     {
@@ -116,14 +120,18 @@ void display(queue *q,int delNum)
         int last_node = 0;
         while (delNum!= 0)
         {
-            if(node_count >= q->count)
+            if(q->front->next == NULL)
             {
-                printf("None ");
-            }
-            else if(q->front->next == NULL)
-            {
-                q->front->data[strcspn(q->front->data,"\n")] = 0; // Remove newline character from last node.
-                printf("%s ",q->front->data);
+                if(last_node != 0)
+                {
+                    printf("None ");
+                }  
+                else
+                {
+                    q->front->data[strcspn(q->front->data,"\n")] = 0; // Remove newline character from last node.
+                    printf("%s ",q->front->data);
+                }
+                last_node++;
             }
             else
             {
@@ -131,7 +139,6 @@ void display(queue *q,int delNum)
                 printf("%s ",q->front->data);
                 q->front = q->front->next;
             }
-            node_count++;
             delNum--;
         }
     }
