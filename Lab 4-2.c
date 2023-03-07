@@ -122,15 +122,16 @@ void display(queue *q,int delNum)
     }
     while(delNum != 0)
     {
-        if(q->front->next == NULL && lastNode == 0) // There is still up coming node and it isn't the last node
+        if(q->count == 1) // Current node is the last node
         {
             // Remove newline character from last node. By searching for \n 
             // in data string then return the index of \n. Then replace it with NULL characters.
             q->front->data[strcspn(q->front->data,"\n")] = '\0'; 
             printf("%s ",q->front->data);
+            dequeue(q);
             lastNode += 1;
         }
-        else if(lastNode >= 1) // If it is the last node or overcall node.
+        else if(q->count == 0) // If it is overcall node.
         {
             printf("None ");
         }
