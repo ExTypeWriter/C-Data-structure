@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define MAX_SIZE 10
+#define MAX 256
 
 typedef struct node
 {
@@ -20,11 +20,11 @@ void checkString(char *string);
 
 int main()
 {
-  int vertices_num, i, j;
-  char caught[20];
-  char names[MAX_SIZE][20];
-  int adj_matrix[MAX_SIZE][MAX_SIZE] = {0};
-  t_list adj_list[MAX_SIZE];
+  int vertices_num, row, column;
+  char caught[MAX];
+  char names[MAX][20];
+  int adj_matrix[MAX][MAX] = {0};
+  t_list adj_list[MAX];
 
   // get the number of vertices in the graph
   printf("Enter the number of vertices: ");
@@ -32,56 +32,56 @@ int main()
   checkString(caught);
   vertices_num = atoi(caught);
   // get the names of the vertices
-  i = 0;
-  while (i < vertices_num)
+  row = 0;
+  while (row < vertices_num)
   {
-    printf("Enter the name of vertex %d: ", i + 1);
-    scanf("%s", names[i]);
-    i++;
+    printf("Enter the name of vertex %d: ", row + 1);
+    scanf("%s", names[row]);
+    row++;
   }
 
   // get the adjacency matrix from user input
   printf("Enter the adjacency matrix:\n");
-  i = 0;
-  while (i < vertices_num)
+  row = 0;
+  while (row < vertices_num)
   {
-    j = 0;
-    while (j < vertices_num)
+    column = 0;
+    while (column < vertices_num)
     {
-      scanf("%d", &adj_matrix[i][j]);
-      j++;
+      scanf("%d", &adj_matrix[row][column]);
+      column++;
     }
-    i++;
+    row++;
   }
 
   // create the adjacency list from the adjacency matrix
-  i = 0;
-  while (i < vertices_num)
+  row = 0;
+  while (row < vertices_num)
   {
-    adj_list[i].head = NULL;
-    j = 0;
-    while (j < vertices_num)
+    adj_list[row].head = NULL;
+    column = 0;
+    while (column < vertices_num)
     {
-      if (adj_matrix[i][j] == 1)
+      if (adj_matrix[row][column] == 1)
       {
         t_node *new_node = (t_node *)malloc(sizeof(t_node));
-        new_node->vertex = j;
-        new_node->next = adj_list[i].head;
-        adj_list[i].head = new_node;
+        new_node->vertex = column;
+        new_node->next = adj_list[row].head;
+        adj_list[row].head = new_node;
       }
-      j++;
+      column++;
     }
-    i++;
+    row++;
   }
 
   // display the adjacency matrix
   printf("The adjacency matrix is:\n");
   printf("\t");
-  i = 0;
-  while (i < vertices_num)
+  row = 0;
+  while (row < vertices_num)
   {
-    printf("%s\t", names[i]);
-    i++;
+    printf("%s\t", names[row]);
+    row++;
   }
   printf("\n");
   int underline = 0;
@@ -91,27 +91,27 @@ int main()
     underline++;
   }
   printf("\n");
-  i = 0;
-  while (i < vertices_num)
+  row = 0;
+  while (row < vertices_num)
   {
-    printf("%s     | ", names[i]);
-    j = 0;
-    while (j < vertices_num)
+    printf("%s     | ", names[row]);
+    column = 0;
+    while (column < vertices_num)
     {
-      printf("%d\t", adj_matrix[i][j]);
-      j++;
+      printf("%d\t", adj_matrix[row][column]);
+      column++;
     }
     printf("\n");
-    i++;
+    row++;
   }
 
   // display the adjacency list
   printf("The adjacency list is:\n");
-  i = 0;
-  while (i < vertices_num)
+  row = 0;
+  while (row < vertices_num)
   {
-    printf("%s -> ", names[i]);
-    t_node *current = adj_list[i].head;
+    printf("%s -> ", names[row]);
+    t_node *current = adj_list[row].head;
     while (current != NULL)
     {
       if (current->next == NULL)
@@ -123,7 +123,7 @@ int main()
       current = current->next;
     }
     printf("\n");
-    i++;
+    row++;
   }
   return 0;
 }
