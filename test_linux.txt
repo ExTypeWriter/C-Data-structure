@@ -1,1 +1,3 @@
 This should work find Linux on Termux! Ubuntu 22.04 Xfce
+sudo code /directory-to-open --user-data-dir='.' --no-sandbox
+https://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@github.com/ExTypeWriter/C-Data-structure.git
