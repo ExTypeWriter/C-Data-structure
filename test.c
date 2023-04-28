@@ -1,117 +1,143 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-typedef struct ListNode {
-  int data;
-  int index;
-  struct ListNode *next;
-  struct ListNode *previous;
-} LISTNODE;
+#define MAX_SIZE 10
 
-void createList(LISTNODE **firstnode) {
-  char buffer[100];
-  int i = 0, index = 0;
-  LISTNODE *ptr = *firstnode;
-  ptr->data=-10001;
-  fgets(buffer, 100, stdin);
-  if(buffer[strlen(buffer)-1]=='\n')
+typedef struct node
+{
+  int vertex;
+  struct node *next;
+} t_node;
+
+typedef struct list
+{
+  t_node *head;
+} t_list;
+
+void checkString(char *string);
+
+int main()
+{
+  int vertices_num, i, j;
+  char caught[20];
+  char names[MAX][20];
+  int adj_matrix[MAX][MAX] = {0};
+  t_list adj_list[MAX];
+
+  // get the number of vertices in the graph
+  printf("Enter the number of vertices: ");
+  scanf("%s", caught);
+  checkString(caught);
+  vertices_num = atoi(caught);
+  // get the names of the vertices
+  i = 0;
+  while (i < vertices_num)
   {
-    buffer[strlen(buffer)-1]='\0';
+    printf("Enter the name of vertex %d: ", i + 1);
+    scanf("%s", names[i]);
+    i++;
   }
-  while(strcmp(&buffer[i],"END") && buffer[i+1]!='\0')
+
+  // get the adjacency matrix from user input
+  printf("Enter the adjacency matrix:\n");
+  i = 0;
+  while (i < vertices_num)
+  {
+    j = 0;
+    while (j < vertices_num)
     {
-      if(index!=0)
-      {
-        ptr->next = malloc(sizeof(LISTNODE));
-        ptr->next->previous = ptr;
-        ptr = ptr->next;
-      }
-      sscanf(&buffer[i],"%d",&ptr->data);
-      ptr->index = index;
-      
-      while(buffer[i] != ' ')
-        {
-          i++;
-        }
-      while(buffer[i] == ' ')
-        {
-          i++;
-        }
-      index++;
+      scanf("%d", &adj_matrix[i][j]);
+      j++;
     }
-}
+    i++;
+  }
 
-void palindrome(LISTNODE *firstnode) {
-  if(firstnode->data==-10001)
+  // create the adjacency list from the adjacency matrix
+  i = 0;
+  while (i < vertices_num)
   {
-    return;
-  }
-  
-  if(firstnode->next==NULL)
-  {
-    printf("None");
-    return;
-  }
-  int index = 0, maxIndex = 0;
-  LISTNODE *selectnode = firstnode;
-  LISTNODE *lastnode = firstnode;
-  while (lastnode->next) {
-    maxIndex++;
-    lastnode = lastnode->next;
-  }
-  LISTNODE *tempnext = firstnode, *tempprevious = lastnode;
-  int k=0;
-  while (tempnext) {
-    if (tempnext->data == tempprevious->data) {
-      k++;
-    }
-      tempnext = tempnext->next;
-      tempprevious = tempprevious->previous;
-    }
-    if (k >= maxIndex) {
-      printf("None");
-      return;
-    }
-  for (int i = 0; i <= maxIndex; i++) {
-    tempnext = firstnode;
-    tempprevious = lastnode;
-    int j = 0;
-    k=0;
-    while (tempnext && tempprevious) {
-      if (tempnext == selectnode && tempnext->next) {
-        tempnext = tempnext->next;
-      }
-      if (tempprevious == selectnode && tempprevious->previous) {
-        tempprevious = tempprevious->previous;
-      }
-      if (tempnext->data == tempprevious->data) {
-        j++;
-      }
-      /*printf("data cmp %d %d\n",tempnext->data,tempprevious->data);*/
-      if(tempnext && tempprevious)
+    adj_list[i].head = NULL;
+    j = 0;
+    while (j < vertices_num)
+    {
+      if (adj_matrix[i][j] == 1)
       {
-        tempnext = tempnext->next;
-        tempprevious = tempprevious->previous;
+        t_node *new_node = (t_node *)malloc(sizeof(t_node));
+        new_node->vertex = j;
+        new_node->next = adj_list[i].head;
+        adj_list[i].head = new_node;
       }
-      
+      j++;
     }
-    /*printf("round %d\n\n",j);*/
-    if (j >= maxIndex) {
-      printf("%d", selectnode->index);
-      (selectnode->previous)->next=selectnode->next;
-      (selectnode->next)->previous=selectnode->previous;
-      free(selectnode);
-      return;
-    }
-      selectnode = selectnode->next;
+    i++;
   }
-  printf("None");
-}
 
-int main(void) {
-  LISTNODE *data = malloc(sizeof(LISTNODE));
-  createList(&data);
-  palindrome(data);
+  // display the adjacency matrix
+  printf("The adjacency matrix is:\n");
+  printf("\t");
+  i = 0;
+  while (i < vertices_num)
+  {
+    printf("%s\t", names[i]);
+    i++;
+  }
+  printf("\n");
+  int underline = 0;
+  while (underline < vertices_num)
+  {
+    printf("---------");
+    underline++;
+  }
+  printf("\n");
+  i = 0;
+  while (i < vertices_num)
+  {
+    printf("%s     | ", names[i]);
+    j = 0;
+    while (j < vertices_num)
+    {
+      printf("%d\t", adj_matrix[i][j]);
+      j++;
+    }
+    printf("\n");
+    i++;
+  }
+
+  // display the adjacency list
+  printf("The adjacency list is:\n");
+  i = 0;
+  while (i < vertices_num)
+  {
+    printf("%s -> ", names[i]);
+    t_node *current = adj_list[i].head;
+    while (current != NULL)
+    {
+      if (current->next == NULL)
+      {
+        printf("%s ", names[current->vertex]);
+        break;
+      }
+      printf("%s -> ", names[current->vertex]);
+      current = current->next;
+    }
+    printf("\n");
+    i++;
+  }
   return 0;
+}
+
+void checkString(char *string)
+{
+  int checkloop = 0;
+  while (checkloop < strlen(string))
+  {
+    if (isdigit(string[checkloop]) == 0)
+    {
+      printf("That's not even a number!\n");
+      exit(0);
+    }
+    checkloop++;
+  }
 }
