@@ -7,6 +7,7 @@
 struct t_stack
 {
     char *data;
+    int priority;
     struct t_stack *next;
 };
 typedef struct t_stack t_stack;
@@ -16,44 +17,44 @@ struct queue
     int count;
     t_stack *front;
     t_stack *rear;
-    int priority;
 };
 typedef struct queue queue;
 
 void createQueue(queue *q);
-
 int isempty(queue *q);
-
-void enqueue(queue *q, char *value);
-
+void enqueue(queue *q, char *value, int priority);
 char *dequeue(queue *q);
-
-void display(queue *q,int delNum);
-
+void display(queue *q);
+int priorityCheck(char* string);
 
 int main()
 {
-        queue *q;
-        int input_size = 1000;
-		int deNum;
-		char userInput[input_size];
-		char *token;
-        q = malloc(sizeof(queue));
-		createQueue(q);
-		fgets(userInput,input_size,stdin);
-		//Replace the \n with Null characters to split the word.
-		if(userInput[strlen(userInput-1)] == '\n')
-		{
-			userInput[strlen(userInput)-1] = '\0'; 
-		}	
-		token = strtok(userInput," ");
-		while(token != NULL)
-		{
-			enqueue(q,token);
-            // printf("Got it\n");
-			token = strtok(NULL," ");
-		}
+    queue *q;
+    int input_size = 1000;
+    char userInput[input_size];
+    char *token;
+
+    q = malloc(sizeof(queue));
+    createQueue(q);
+
+    fgets(userInput, input_size, stdin);
+    if (userInput[strlen(userInput) - 1] == '\n')
+    {
+        userInput[strlen(userInput) - 1] = '\0';
+    }
+
+    token = strtok(userInput, "");
+    while (token != NULL)
+    {
+        // Read the priority as well
+        if(token )
+        enqueue(q, token, priorityCheck(token));
+        printf("enqueued %s!",token);
+        token = strtok(NULL, " ");
+    }
+
     display(q);
+
     printf("\n");
     return 0;
 }
@@ -70,51 +71,118 @@ int isempty(queue *q)
     return (q->rear == NULL);
 }
 
-void enqueue(queue *q, char *value)
+void enqueue(queue *q, char *value, int priority)
 {
     if (q->count < FULL)
     {
         t_stack *tmp;
         tmp = malloc(sizeof(t_stack));
-        tmp->data = value;
-        tmp->next = NULL;	
-        if(!isempty(q))
+        tmp->data = malloc(strlen(value) + 1);
+        strcpy(tmp->data, value);
+        tmp->priority = priority;
+        tmp->next = NULL;
+
+        if (isempty(q))
         {
-            q->rear->next = tmp;
-            q->rear = tmp;
-            q->rear->priority++;
+            q->front = q->rear = tmp;
+        }
+        else if (priority == 2)
+        {
+            tmp->next = q->front;
+            q->front = tmp;
         }
         else
         {
-            q->front = q->rear = tmp;
-            q->rear->priority++;
+            t_stack *current = q->front;
+            while (current->next != NULL && current->next->priority == 2)
+            {
+                current = current->next;
+            }
+            tmp->next = current->next;
+            current->next = tmp;
+            if (current == q->rear)
+            {
+                q->rear = tmp;
+            }
         }
         q->count++;
     }
     else
     {
-        printf("LIST IS FULL\n");
+        printf("QUEUE IS FULL\n");
     }
 }
 
+
+
+
 char *dequeue(queue *q)
 {
-    t_stack *tmp; 
-    tmp = q->front;
-    char *n = q->front->data;
-    q->front = q->front->next;
-    q->count--;
-    free(tmp);
-    return(n);
+    if (isempty(q))
+    {
+        printf("QUEUE IS EMPTY\n");
+        return NULL;
+    }
+    else
+    {
+        t_stack *tmp = q->rear;
+        char *n = tmp->data;
+        q->rear = q->rear->next;
+        free(tmp);
+        q->count--;
+        return n;
+    }
 }
 
 void display(queue *q)
 {
-    int i = 0
-        while(i < q->count)
-        {
-            q->front->data[strcspn(q->front->data,"\n")] = 0;
-            printf("%s ",dequeue(q));
-            i++;
-        }
+    t_stack *current = q->rear;
+    t_stack *stack = NULL;
+
+    // Push elements with priority 1 onto a separate stack
+    while (current != NULL && current->priority == 1)
+    {
+        t_stack *next = current->next;
+        printf("Pushed! %s\n",current->data);
+        current->next = stack;
+        stack = current;
+        current = next;
+    }
+
+    // Print elements with priority 2
+    while (current != NULL && current->priority == 2)
+    {
+        printf("%s ", current->data);
+        current = current->next;
+    }
+
+    // Print elements with priority 1 from the stack
+    while (stack != NULL)
+    {
+        printf("%s ", stack->data);
+        t_stack *next = stack->next;
+        stack->next = current;
+        current = stack;
+        stack = next;
+    }
 }
+
+
+
+
+int priorityCheck(char* string) {
+    char* high_priority_dict = "aAeEiIoOuU.!";  // Updated high priority dictionary
+    int i = 0;
+    int priority = 1;
+    
+    while (string[i] != '\0') {
+        if (strchr(high_priority_dict, string[i]) != NULL) {
+            priority = 2;
+            return priority;
+        }
+        i++;
+    }
+    
+    return priority;
+}
+

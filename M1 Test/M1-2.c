@@ -16,7 +16,7 @@ int main()
 {
      struct t_stack *stackForward = NULL, *stackBackward = NULL;
      char buffer[10000] = {'\0'};
-     char retVal;
+     char return_value;
      char *token;
 
      fgets(buffer, 10000, stdin);
@@ -38,9 +38,9 @@ int main()
      }
      while (stackForward != NULL)
      {
-          retVal = peek(&stackForward);
-          printf("%c", retVal);
-          push(&stackBackward, retVal);
+          return_value = peek(&stackForward);
+          printf("%c", return_value);
+          push(&stackBackward, return_value);
           pop(&stackForward);
      }
      if (strlen(buffer) % 2 == 0)
@@ -74,15 +74,15 @@ void push(struct t_stack **top, char stream)
 
 void pop(struct t_stack **top)
 {
-     struct t_stack *freeNode = NULL;
+     struct t_stack *node_to_free = NULL;
      if (*top == NULL)
      {
           printf("STACK UNDERFLOW\n");
           return;
      }
-     freeNode = *top;
+     node_to_free = *top;
      *top = (*top)->next;
-     free(freeNode);
+     free(node_to_free);
 }
 
 char peek(struct t_stack **top)
